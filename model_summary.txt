@@ -1,0 +1,37 @@
+
+Call:
+lm(formula = price ~ neighbourhood, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+ -416.0  -133.8   -79.0     9.1 30061.4 
+
+Coefficients:
+                                 Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                        442.04      10.61  41.675  < 2e-16 ***
+neighbourhoodBatignolles-Monceau  -176.22      13.12 -13.428  < 2e-16 ***
+neighbourhoodBourse               -185.01      14.92 -12.405  < 2e-16 ***
+neighbourhoodButtes-Chaumont      -252.18      13.92 -18.118  < 2e-16 ***
+neighbourhoodButtes-Montmartre    -263.04      12.40 -21.212  < 2e-16 ***
+neighbourhoodEntrep^ot            -224.20      13.34 -16.811  < 2e-16 ***
+neighbourhoodGobelins             -260.69      15.45 -16.878  < 2e-16 ***
+neighbourhoodH^otel-de-Ville      -151.00      15.51  -9.737  < 2e-16 ***
+neighbourhoodLouvre               -103.48      16.71  -6.194 5.90e-10 ***
+neighbourhoodLuxembourg           -105.92      15.68  -6.757 1.42e-11 ***
+neighbourhoodM'enilmontant        -281.92      14.11 -19.980  < 2e-16 ***
+neighbourhoodObservatoire         -239.63      14.99 -15.985  < 2e-16 ***
+neighbourhoodOp'era               -184.30      13.99 -13.171  < 2e-16 ***
+neighbourhoodPalais-Bourbon        -32.20      15.72  -2.049   0.0405 *  
+neighbourhoodPanth'eon            -189.92      15.56 -12.202  < 2e-16 ***
+neighbourhoodPassy                 -34.42      13.02  -2.644   0.0082 ** 
+neighbourhoodPopincourt           -231.28      12.75 -18.134  < 2e-16 ***
+neighbourhoodReuilly              -225.09      14.71 -15.305  < 2e-16 ***
+neighbourhoodTemple               -192.26      14.35 -13.401  < 2e-16 ***
+neighbourhoodVaugirard            -196.48      12.80 -15.344  < 2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 516.6 on 64210 degrees of freedom
+Multiple R-squared:  0.02195,	Adjusted R-squared:  0.02166 
+F-statistic: 75.86 on 19 and 64210 DF,  p-value: < 2.2e-16
+

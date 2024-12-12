@@ -41,6 +41,23 @@ price_by_room <- data %>%
 
 write.csv(price_by_room, "/Users/baptisteaudouin/Documents/GitHub/MON.2.2/Data/price_by_room.csv", row.names = FALSE)
 
+#Prix par quartiers
+price_by_room <- data %>%
+  group_by(neighbourhood) %>%
+  summarise(mean_price = mean(price, na.rm = TRUE))
+
+write.csv(price_by_room, "/Users/baptisteaudouin/Documents/GitHub/MON.2.2/Data/price_by_neighbourhood.csv", row.names = FALSE)
+
+# Nombre d'annonces et prix moyen par type de chambre et quartier
+annonces_by_room_neighbourhood <- data %>%
+  group_by(neighbourhood, room_type) %>%
+  summarise(
+    count = n(),
+    mean_price = mean(price, na.rm = TRUE)
+  )
+
+write.csv(annonces_by_room_neighbourhood, "/Users/baptisteaudouin/Documents/GitHub/MON.2.2/Data/annonces_by_room_neighbourhood.csv", row.names = FALSE)
+
 # histogramme de prix
 plot1 <- ggplot(data, aes(x = price)) +
 # type de graphe
@@ -90,10 +107,72 @@ map <- leaflet(data) %>%
             title = "Légende")
 print(map)
 # Sauvegarder la carte dans un fichier HTML
-saveWidget(map, "/Users/baptisteaudouin/Documents/GitHub/MON.2.2/Graphs/map_simple.html")
+saveWidget(map, "/Users/baptisteaudouin/Documents/GitHub/MON.2.2/Maps/map_simple.html")
 
 
-
+# Interface utilisateur avec Shiny
+install.packages("shiny")
+library("shiny")
+ui <- fluidPage(
+  titlePanel("Carte Airbnb Paris"),
+  
+  sidebarLayout(
+    sidebarPanel(
+      # Sélectionner le type de logement
+      selectInput("room_type", "Type de logement", 
+                  choices = unique(data$room_type), selected = "Entire home/apt"),
+      
+      # Sélectionner le prix minimum
+      sliderInput("price", "Prix (€)", 
+                  min = min(data$price), max = 1000, 
+                  value = c(min(data$price), 1000)),
+      
+      # Sélectionner l'arrondissement
+      selectInput("neighbourhood", "Quartier",
+                  choices = unique(data$neighbourhood), selected = "Hôtel-de-Ville")
+    ),
+    
+    mainPanel(
+      leafletOutput("map")
+    )
+  )
+)
+# Serveur pour gérer la carte et les filtres
+server <- function(input, output) {
+  
+  # Filtrer les données selon les critères
+  filtered_data <- reactive({
+    data %>%
+      filter(room_type == input$room_type,
+             price >= input$price[1] & price <= input$price[2],
+             neighbourhood == input$neighbourhood,
+             price < 1000)
+  })
+  
+  # Créer la carte
+  output$map <- renderLeaflet({
+    leaflet(filtered_data()) %>%
+      addTiles() %>%
+      addCircleMarkers(
+        ~longitude, ~latitude,
+        radius = 5,
+        color = ~ifelse(price > 200, "red", "green"),
+        popup = ~paste(name, "<br>Prix : ", price, "€")
+      ) %>%
+      addLegend("bottomright", 
+                colors = c("green", "red"), 
+                labels = c("Prix bas", "Prix élevé"),
+                title = "Légende")
+  })
+}
 
 # Exécuter l'application
 #shinyApp(ui, server)
+
+
+#5. Régression linéaire simple
+# Créer le modèle de régression linéaire
+model <- lm(price ~ neighbourhood , data = data)
+
+capture.output(summary(model), file = "model_summary.txt")
+
